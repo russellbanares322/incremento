@@ -7,10 +7,16 @@ const Home = () => {
     thirdNumber: Math.floor(Math.random() * 9) + 1,
     fourthNumber: Math.floor(Math.random() * 9) + 1,
   });
+  const [numbersInput, setNumbersInput] = useState({
+    firstInputNumber: 0,
+    secondInputNumber: 0,
+    thirdInputNumber: 0,
+    fourthInputNumber: 0,
+  });
 
   const numberStyles = "bg-slate-800 p-4 rounded-lg text-white";
   const inputNumberStyles =
-    "w-10 h-14 p-2 rounded-lg text-center border-2 border-black";
+    "w-10 h-14  rounded-lg text-center border-2 border-black";
 
   return (
     <div className="bg-white w-[30rem] h-[25rem] rounded-lg">
