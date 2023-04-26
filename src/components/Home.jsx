@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { NumbersInputData } from "../data/NumbersInputData";
 
 const Home = () => {
+  const numbersInputRef = useRef([]);
   const [numbers] = useState({
     firstNumber: Math.floor(Math.random() * 9) + 1,
     secondNumber: Math.floor(Math.random() * 9) + 1,
@@ -27,6 +29,32 @@ const Home = () => {
       [e.target.name]: e.target.value.slice(0, limit),
     });
   };
+
+  //Handler for inputs to jump to another input after answer is typed
+  useEffect(() => {
+    numbersInputRef.current = numbersInputRef.current.slice(
+      0,
+      NumbersInputData.length
+    );
+    if (
+      !numbersInput.firstInputNumber &&
+      !numbersInput.secondInputNumber &&
+      !numbersInput.thirdInputNumber &&
+      !numbersInput.fourthInputNumber
+    ) {
+      return numbersInputRef.current[0].focus();
+    }
+    if (numbersInput.firstInputNumber.length > 0) {
+      numbersInputRef.current[1].focus();
+    }
+    if (numbersInput.secondInputNumber.length > 0) {
+      numbersInputRef.current[2].focus();
+    }
+    if (numbersInput.thirdInputNumber.length > 0) {
+      numbersInputRef.current[3].focus();
+    }
+  }, [numbersInput, NumbersInputData]);
+
   return (
     <div className="bg-white w-[30rem] h-[25rem] rounded-lg">
       <h1 className="text-center mt-5 text-lg">Incremento</h1>
@@ -37,34 +65,17 @@ const Home = () => {
         <h4 className={numberStyles}>{numbers.fourthNumber}</h4>
       </div>
       <div className="flex justify-center align-center gap-8 mt-10">
-        <input
-          value={numbersInput.firstInputNumber}
-          name="firstInputNumber"
-          onChange={handleNumberChange}
-          className={inputNumberStyles}
-          type="number"
-        />
-        <input
-          value={numbersInput.secondInputNumber}
-          name="secondInputNumber"
-          onChange={handleNumberChange}
-          className={inputNumberStyles}
-          type="number"
-        />
-        <input
-          value={numbersInput.thirdInputNumber}
-          name="thirdInputNumber"
-          onChange={handleNumberChange}
-          className={inputNumberStyles}
-          type="number"
-        />
-        <input
-          value={numbersInput.fourthInputNumber}
-          name="fourthInputNumber"
-          onChange={handleNumberChange}
-          className={inputNumberStyles}
-          type="number"
-        />
+        {NumbersInputData.map((input, idx) => (
+          <input
+            ref={(el) => (numbersInputRef.current[idx] = el)}
+            key={idx}
+            value={numbersInput[input.name]}
+            name={input.name}
+            onChange={handleNumberChange}
+            className={inputNumberStyles}
+            type={input.type}
+          />
+        ))}
       </div>
     </div>
   );
