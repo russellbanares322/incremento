@@ -8,15 +8,24 @@ const Home = () => {
     fourthNumber: Math.floor(Math.random() * 9) + 1,
   });
 
-  console.log(numbers);
+  const numberStyles = "bg-slate-800 p-4 rounded-lg text-white";
+  const inputNumberStyles =
+    "w-10 h-14 p-2 rounded-lg text-center border-2 border-black";
+
   return (
     <div className="bg-white w-[30rem] h-[25rem] rounded-lg">
       <h1 className="text-center mt-5 text-lg">Incremento</h1>
-      <div>
-        <h4>{numbers.firstNumber}</h4>
-        <h4>{numbers.secondNumber}</h4>
-        <h4>{numbers.thirdNumber}</h4>
-        <h4>{numbers.fourthNumber}</h4>
+      <div className="flex justify-center align-center gap-8 mt-10">
+        <h4 className={numberStyles}>{numbers.firstNumber}</h4>
+        <h4 className={numberStyles}>{numbers.secondNumber}</h4>
+        <h4 className={numberStyles}>{numbers.thirdNumber}</h4>
+        <h4 className={numberStyles}>{numbers.fourthNumber}</h4>
+      </div>
+      <div className="flex justify-center align-center gap-8 mt-10">
+        <input className={inputNumberStyles} type="number" />
+        <input className={inputNumberStyles} type="number" />
+        <input className={inputNumberStyles} type="number" />
+        <input className={inputNumberStyles} type="number" />
       </div>
     </div>
   );
