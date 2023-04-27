@@ -23,9 +23,8 @@ const Home = () => {
     +numbersInput.thirdInputNumber === numbers.thirdNumber + 1 &&
     +numbersInput.fourthInputNumber === numbers.fourthNumber + 1;
 
-  const popupMessages = isAnswerCorrect
-    ? "Great Job" || "Wonderful" || "Awesome" || "Amazing"
-    : "Game Over";
+  const popupMessage = isAnswerCorrect ? "Great Job" : "Game Over";
+
   //Number styles
   const numberStyles = "bg-slate-800 p-4 rounded-lg text-white";
   const inputNumberStyles =
@@ -117,12 +116,16 @@ const Home = () => {
           />
         ))}
       </div>
-      <div
-        className={`bg-slate-800 h-9 w-40 absolute bottom-5 left-40 rounded-lg duration-300 ease-in-out ${
-          numbersInput.fourthInputNumber.length < 0 && "scale-0"
-        }`}
-      >
-        <p className="text-center mt-[0.39rem] text-white">{popupMessages}</p>
+      {isAnswerCorrect && (
+        <div
+          className={`bg-slate-800 h-9 w-40 absolute bottom-5 left-40 rounded-lg duration-300 ease-in-out `}
+        >
+          <p className="text-center mt-[0.39rem] text-white">{popupMessage}</p>
+        </div>
+      )}
+      <div className="flex justify-center items-center mt-10">
+        <h1 className="text-2xl">00:</h1>
+        <h1 className="text-2xl">00</h1>
       </div>
     </div>
   );
