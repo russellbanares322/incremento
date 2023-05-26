@@ -1,9 +1,11 @@
-import { useEffect, useState, useRef } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import { NumbersInputData } from "../data/NumbersInputData";
 
 const Home = () => {
   const numbersInputRef = useRef([]);
   const [score, setScore] = useState(0);
+  const [timer, setTimer] = useState(5);
+  const [startTimer, setStartTimer] = useState(false);
   const [numbers, setNumbers] = useState({
     firstNumber: Math.floor(Math.random() * 8) + 1,
     secondNumber: Math.floor(Math.random() * 8) + 1,
@@ -27,8 +29,9 @@ const Home = () => {
 
   //Number styles
   const numberStyles = "bg-slate-800 p-4 rounded-lg text-white";
-  const inputNumberStyles =
-    "w-10 h-14  rounded-lg text-center border-2 border-black";
+  const inputNumberStyles = `w-10 h-14  rounded-lg text-center border-2 ${
+    numbersInputRef.current ? "border-red-600" : "border-black"
+  }`;
 
   //For reading numbers input value
   const handleNumberChange = (e) => {
@@ -37,6 +40,11 @@ const Home = () => {
       ...numbersInput,
       [e.target.name]: e.target.value.slice(0, limit),
     });
+  };
+
+  //Handler for starting the timer
+  const handleStartTimer = () => {
+    setStartTimer(true);
   };
 
   //Handler for inputs to jump to another input if the input itself already has a value
@@ -93,10 +101,25 @@ const Home = () => {
     }
   }, [numbersInput]);
 
+  //For the timer countdown
+  useMemo(() => {
+    if (startTimer) {
+      const timeInterval = setInterval(() => {
+        setTimer(timer - 1);
+      }, 1000);
+
+      if (timer === 0) {
+        clearInterval(timeInterval);
+        setStartTimer(false);
+      }
+    }
+  }, [startTimer, timer]);
+
   return (
-    <div className="bg-white w-[30rem] h-[25rem] rounded-lg relative">
+    <div className="h-full w-full bg-white md:w-[33rem] md:h-[30rem] rounded-lg relative">
+      {JSON.stringify(startTimer)}
       <h1 className="text-center mt-5 text-lg">Incremento</h1>
-      <h3 className="text-center mt-5">Score: {score}</h3>
+      <h3 className="text-center mt-5 text-lg">Score: {score}</h3>
       <div className="flex justify-center align-center gap-8 mt-10">
         <h4 className={numberStyles}>{numbers.firstNumber}</h4>
         <h4 className={numberStyles}>{numbers.secondNumber}</h4>
@@ -123,9 +146,14 @@ const Home = () => {
           <p className="text-center mt-[0.39rem] text-white">{popupMessage}</p>
         </div>
       )}
-      <div className="flex justify-center items-center mt-10">
-        <h1 className="text-2xl">00:</h1>
-        <h1 className="text-2xl">00</h1>
+      <div className="flex justify-center items-center mt-10 flex-col">
+        <h1 className="text-2xl">Timer: {timer}</h1>
+        <button
+          onClick={handleStartTimer}
+          className="bg-slate-800 text-white w-20 h-10 rounded-lg mt-5"
+        >
+          Play
+        </button>
       </div>
     </div>
   );
