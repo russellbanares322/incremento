@@ -1,10 +1,13 @@
-import { useMemo, useState, useRef, useEffect } from "react";
-import { NumbersInputData } from "../data/NumbersInputData";
+import { useState, useRef, useEffect } from "react";
+import { NumbersInputData } from "../../data/NumbersInputData";
+import ScoreModal from "../modal/ScoreModal";
+const TIME = 5;
 
 const Home = () => {
   const numbersInputRef = useRef([]);
   const [score, setScore] = useState(0);
-  const [timer, setTimer] = useState(5);
+  const [timer, setTimer] = useState(TIME);
+  const [openScoreModal, setOpenScoreModal] = useState(false);
   const [startTimer, setStartTimer] = useState(false);
   const [numbers, setNumbers] = useState({
     firstNumber: Math.floor(Math.random() * 8) + 1,
@@ -12,6 +15,14 @@ const Home = () => {
     thirdNumber: Math.floor(Math.random() * 8) + 1,
     fourthNumber: Math.floor(Math.random() * 8) + 1,
   });
+
+  const handleShowScoreModal = () => {
+    setOpenScoreModal(true);
+  };
+  const handlePlayAgain = () => {
+    setOpenScoreModal(false);
+    setTimer(TIME);
+  };
   const [numbersInput, setNumbersInput] = useState({
     firstInputNumber: "",
     secondInputNumber: "",
@@ -25,13 +36,8 @@ const Home = () => {
     +numbersInput.thirdInputNumber === numbers.thirdNumber + 1 &&
     +numbersInput.fourthInputNumber === numbers.fourthNumber + 1;
 
-  const popupMessage = isAnswerCorrect ? "Great Job" : "Game Over";
-
   //Number styles
   const numberStyles = "bg-slate-800 p-4 rounded-lg text-white";
-  const inputNumberStyles = `w-10 h-14  rounded-lg text-center border-2 ${
-    numbersInputRef.current ? "border-red-600" : "border-black"
-  }`;
 
   //For reading numbers input value
   const handleNumberChange = (e) => {
@@ -102,24 +108,27 @@ const Home = () => {
   }, [numbersInput]);
 
   //For the timer countdown
-  useMemo(() => {
+  useEffect(() => {
     if (startTimer) {
       const timeInterval = setInterval(() => {
-        setTimer(timer - 1);
+        setTimer((prevTimer) => prevTimer - 1);
       }, 1000);
 
       if (timer === 0) {
         clearInterval(timeInterval);
+        handleShowScoreModal();
         setStartTimer(false);
       }
+
+      return () => {
+        clearInterval(timeInterval);
+      };
     }
   }, [startTimer, timer]);
 
   return (
     <div className="h-full w-full bg-white md:w-[33rem] md:h-[30rem] rounded-lg relative">
-      {JSON.stringify(startTimer)}
       <h1 className="text-center mt-5 text-lg">Incremento</h1>
-      <h3 className="text-center mt-5 text-lg">Score: {score}</h3>
       <div className="flex justify-center align-center gap-8 mt-10">
         <h4 className={numberStyles}>{numbers.firstNumber}</h4>
         <h4 className={numberStyles}>{numbers.secondNumber}</h4>
@@ -134,18 +143,13 @@ const Home = () => {
             value={numbersInput[input.name]}
             name={input.name}
             onChange={handleNumberChange}
-            className={inputNumberStyles}
+            className={`w-10 h-14  rounded-lg text-center border-2  border-slate-300 focus:border-slate-800 outline-none ${
+              numbersInputRef.current[idx] !== idx && "pointer-events-none"
+            }`}
             type={input.type}
           />
         ))}
       </div>
-      {isAnswerCorrect && (
-        <div
-          className={`bg-slate-800 h-9 w-40 absolute bottom-5 left-40 rounded-lg duration-300 ease-in-out `}
-        >
-          <p className="text-center mt-[0.39rem] text-white">{popupMessage}</p>
-        </div>
-      )}
       <div className="flex justify-center items-center mt-10 flex-col">
         <h1 className="text-2xl">Timer: {timer}</h1>
         <button
@@ -155,6 +159,11 @@ const Home = () => {
           Play
         </button>
       </div>
+      <ScoreModal
+        score={score}
+        openScoreModal={openScoreModal}
+        handlePlayAgain={handlePlayAgain}
+      />
     </div>
   );
 };
