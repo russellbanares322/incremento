@@ -136,7 +136,7 @@ const Home = () => {
   }, [startGame, timer]);
 
   return (
-    <div className="h-full w-full bg-white md:w-[25rem] md:h-[25rem] rounded-lg relative">
+    <div className="h-full w-full bg-white md:w-[25rem] md:h-[25rem] rounded-lg relative flex justify-center items-center flex-col">
       <h1 className="text-center mt-5 text-lg">Incremento</h1>
       <div className="flex justify-center align-center gap-8 mt-10">
         <h4 className={numberStyles}>{numbers.firstNumber}</h4>
