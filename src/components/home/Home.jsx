@@ -1,14 +1,14 @@
 import { useState, useRef, useEffect } from "react";
 import { NumbersInputData } from "../../data/NumbersInputData";
 import ScoreModal from "../modal/ScoreModal";
-const TIME = 5;
+const TIME = 10;
 
 const Home = () => {
   const numbersInputRef = useRef([]);
   const [score, setScore] = useState(0);
   const [timer, setTimer] = useState(TIME);
   const [openScoreModal, setOpenScoreModal] = useState(false);
-  const [startTimer, setStartTimer] = useState(false);
+  const [startGame, setStartGame] = useState(false);
   const [numbers, setNumbers] = useState({
     firstNumber: Math.floor(Math.random() * 8) + 1,
     secondNumber: Math.floor(Math.random() * 8) + 1,
@@ -20,8 +20,15 @@ const Home = () => {
     setOpenScoreModal(true);
   };
   const handlePlayAgain = () => {
+    setScore(0);
     setOpenScoreModal(false);
     setTimer(TIME);
+    setNumbersInput({
+      firstInputNumber: "",
+      secondInputNumber: "",
+      thirdInputNumber: "",
+      fourthInputNumber: "",
+    });
   };
   const [numbersInput, setNumbersInput] = useState({
     firstInputNumber: "",
@@ -49,8 +56,8 @@ const Home = () => {
   };
 
   //Handler for starting the timer
-  const handleStartTimer = () => {
-    setStartTimer(true);
+  const handlestartGame = () => {
+    setStartGame(true);
   };
 
   //Handler for inputs to jump to another input if the input itself already has a value
@@ -59,11 +66,13 @@ const Home = () => {
       0,
       NumbersInputData.length
     );
+
     if (
       !numbersInput.firstInputNumber &&
       !numbersInput.secondInputNumber &&
       !numbersInput.thirdInputNumber &&
-      !numbersInput.fourthInputNumber
+      !numbersInput.fourthInputNumber &&
+      startGame
     ) {
       return numbersInputRef.current[0].focus();
     }
@@ -85,7 +94,7 @@ const Home = () => {
       });
       handleGenerateNumbers();
     }
-  }, [numbersInput, NumbersInputData]);
+  }, [numbersInput, NumbersInputData, startGame]);
 
   //Handler for generating random numbers
   const handleGenerateNumbers = () => {
@@ -109,7 +118,7 @@ const Home = () => {
 
   //For the timer countdown
   useEffect(() => {
-    if (startTimer) {
+    if (startGame) {
       const timeInterval = setInterval(() => {
         setTimer((prevTimer) => prevTimer - 1);
       }, 1000);
@@ -117,17 +126,17 @@ const Home = () => {
       if (timer === 0) {
         clearInterval(timeInterval);
         handleShowScoreModal();
-        setStartTimer(false);
+        setStartGame(false);
       }
 
       return () => {
         clearInterval(timeInterval);
       };
     }
-  }, [startTimer, timer]);
+  }, [startGame, timer]);
 
   return (
-    <div className="h-full w-full bg-white md:w-[33rem] md:h-[30rem] rounded-lg relative">
+    <div className="h-full w-full bg-white md:w-[25rem] md:h-[25rem] rounded-lg relative">
       <h1 className="text-center mt-5 text-lg">Incremento</h1>
       <div className="flex justify-center align-center gap-8 mt-10">
         <h4 className={numberStyles}>{numbers.firstNumber}</h4>
@@ -138,14 +147,14 @@ const Home = () => {
       <div className="flex justify-center align-center gap-8 mt-10">
         {NumbersInputData.map((input, idx) => (
           <input
+            disabled={!startGame}
             ref={(el) => (numbersInputRef.current[idx] = el)}
             key={idx}
             value={numbersInput[input.name]}
             name={input.name}
             onChange={handleNumberChange}
-            className={`w-10 h-14  rounded-lg text-center border-2  border-slate-300 focus:border-slate-800 outline-none ${
-              numbersInputRef.current[idx] !== idx && "pointer-events-none"
-            }`}
+            className={`w-10 h-14  rounded-lg text-center border-2  border-slate-300 focus:border-slate-800 outline-none
+            `}
             type={input.type}
           />
         ))}
@@ -153,7 +162,7 @@ const Home = () => {
       <div className="flex justify-center items-center mt-10 flex-col">
         <h1 className="text-2xl">Timer: {timer}</h1>
         <button
-          onClick={handleStartTimer}
+          onClick={handlestartGame}
           className="bg-slate-800 text-white w-20 h-10 rounded-lg mt-5"
         >
           Play
