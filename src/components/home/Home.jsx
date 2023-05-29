@@ -1,13 +1,15 @@
 import { useState, useRef, useEffect } from "react";
 import { NumbersInputData } from "../../data/NumbersInputData";
+import { HiOutlineTrophy } from "react-icons/hi2";
 import ScoreModal from "../modal/ScoreModal";
-const TIME = 10;
+const TIME = 20;
 
 const Home = () => {
   const numbersInputRef = useRef([]);
   const [score, setScore] = useState(0);
   const [timer, setTimer] = useState(TIME);
   const [openScoreModal, setOpenScoreModal] = useState(false);
+  const [bestScore, setBestScore] = useState(0);
   const [startGame, setStartGame] = useState(false);
   const [numbers, setNumbers] = useState({
     firstNumber: Math.floor(Math.random() * 8) + 1,
@@ -15,7 +17,7 @@ const Home = () => {
     thirdNumber: Math.floor(Math.random() * 8) + 1,
     fourthNumber: Math.floor(Math.random() * 8) + 1,
   });
-
+  const isNewHighScore = score > bestScore;
   const handleShowScoreModal = () => {
     setOpenScoreModal(true);
   };
@@ -44,7 +46,7 @@ const Home = () => {
     +numbersInput.fourthInputNumber === numbers.fourthNumber + 1;
 
   //Number styles
-  const numberStyles = "bg-slate-800 p-4 rounded-lg text-white";
+  const numberStyles = "bg-indigo-950 p-4 rounded-lg text-white";
 
   //For reading numbers input value
   const handleNumberChange = (e) => {
@@ -127,6 +129,11 @@ const Home = () => {
         clearInterval(timeInterval);
         handleShowScoreModal();
         setStartGame(false);
+        if (isNewHighScore) {
+          return setBestScore(score);
+        } else {
+          return;
+        }
       }
 
       return () => {
@@ -136,7 +143,11 @@ const Home = () => {
   }, [startGame, timer]);
 
   return (
-    <div className="h-full w-full bg-white md:w-[25rem] md:h-[25rem] rounded-lg relative flex justify-center items-center flex-col">
+    <div className="h-full w-full bg-white md:w-[25rem] md:h-[30rem] rounded-lg relative flex justify-center items-center flex-col">
+      <h1 className="flex justify-center items-center text-md gap-1">
+        <HiOutlineTrophy size={16} />
+        Best Score: {bestScore}
+      </h1>
       <h1 className="text-center mt-5 text-lg">Incremento</h1>
       <div className="flex justify-center align-center gap-8 mt-10">
         <h4 className={numberStyles}>{numbers.firstNumber}</h4>
@@ -153,7 +164,7 @@ const Home = () => {
             value={numbersInput[input.name]}
             name={input.name}
             onChange={handleNumberChange}
-            className={`w-10 h-14  rounded-lg text-center border-2  border-slate-300 focus:border-slate-800 outline-none
+            className={`w-10 h-14  rounded-lg text-center border-2  border-indigo-300 focus:border-indigo-800 outline-none
             `}
             type={input.type}
           />
@@ -163,12 +174,13 @@ const Home = () => {
         <h1 className="text-2xl">Timer: {timer}</h1>
         <button
           onClick={handlestartGame}
-          className="bg-slate-800 text-white w-20 h-10 rounded-lg mt-5"
+          className="bg-indigo-800 text-white w-20 h-10 rounded-lg mt-5"
         >
           Play
         </button>
       </div>
       <ScoreModal
+        isNewHighScore={isNewHighScore}
         score={score}
         openScoreModal={openScoreModal}
         handlePlayAgain={handlePlayAgain}
