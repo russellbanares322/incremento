@@ -150,7 +150,7 @@ const Home = () => {
   };
 
   return (
-    <div className="h-full w-full bg-white md:w-[25rem] md:h-[30rem] rounded-lg relative">
+    <div className="h-full w-full bg-white md:w-[25rem] md:h-[30rem] md:rounded-lg relative">
       <div className="flex justify-between m-2 ml-5">
         <h1
           onClick={handleShowInstructionModal}
