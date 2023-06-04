@@ -27,9 +27,10 @@ const InstructionModal = ({
         <h1 className="text-center text-xl font-bold text-indigo-950">
           Instructions:
         </h1>
-        <h1 className="text-start text-md pt-2">
+        <h1 className="text-start text-md pt-2 pb-2">
           You need to input the incremented value of the displayed numbers.
         </h1>
+        <hr />
         <h1 className="text-start text-md pt-2">
           For example the displayed numbers are{" "}
           <span className="text-indigo-950 italic">4 5 4 5,</span>
