@@ -2,7 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import { NumbersInputData } from "../../data/NumbersInputData";
 import { HiOutlineTrophy } from "react-icons/hi2";
 import ScoreModal from "../modal/ScoreModal";
-const TIME = 20;
+import InstructionModal from "../modal/InstructionModal";
+const TIME = 10;
 
 const Home = () => {
   const numbersInputRef = useRef([]);
@@ -11,12 +12,20 @@ const Home = () => {
   const [openScoreModal, setOpenScoreModal] = useState(false);
   const [bestScore, setBestScore] = useState(0);
   const [startGame, setStartGame] = useState(false);
+  const [showInstructionModal, setShowInstructionModal] = useState(false);
   const [numbers, setNumbers] = useState({
     firstNumber: Math.floor(Math.random() * 8) + 1,
     secondNumber: Math.floor(Math.random() * 8) + 1,
     thirdNumber: Math.floor(Math.random() * 8) + 1,
     fourthNumber: Math.floor(Math.random() * 8) + 1,
   });
+  const [numbersInput, setNumbersInput] = useState({
+    firstInputNumber: "",
+    secondInputNumber: "",
+    thirdInputNumber: "",
+    fourthInputNumber: "",
+  });
+
   const isNewHighScore = score > bestScore;
   const handleShowScoreModal = () => {
     setOpenScoreModal(true);
@@ -31,13 +40,10 @@ const Home = () => {
       thirdInputNumber: "",
       fourthInputNumber: "",
     });
+    if (isNewHighScore) {
+      return setBestScore(score);
+    }
   };
-  const [numbersInput, setNumbersInput] = useState({
-    firstInputNumber: "",
-    secondInputNumber: "",
-    thirdInputNumber: "",
-    fourthInputNumber: "",
-  });
 
   const isAnswerCorrect =
     +numbersInput.firstInputNumber === numbers.firstNumber + 1 &&
@@ -129,11 +135,6 @@ const Home = () => {
         clearInterval(timeInterval);
         handleShowScoreModal();
         setStartGame(false);
-        if (isNewHighScore) {
-          return setBestScore(score);
-        } else {
-          return;
-        }
       }
 
       return () => {
@@ -142,12 +143,29 @@ const Home = () => {
     }
   }, [startGame, timer]);
 
+  //For showing instruction modal
+
+  const handleShowInstructionModal = () => {
+    setShowInstructionModal(true);
+  };
+
   return (
-    <div className="h-full w-full bg-white md:w-[25rem] md:h-[30rem] rounded-lg relative flex justify-center items-center flex-col">
-      <h1 className="flex justify-center items-center text-md gap-1">
-        <HiOutlineTrophy size={16} />
-        Best Score: {bestScore}
-      </h1>
+    <div className="h-full w-full bg-white md:w-[25rem] md:h-[30rem] rounded-lg relative">
+      <div className="flex justify-between m-2 ml-5">
+        <h1
+          onClick={handleShowInstructionModal}
+          className="text-indigo-800 underline cursor-pointer"
+        >
+          How to play?
+        </h1>
+        <h1
+          className="flex justify-center items-center text-lg gap-1 mr-5 cursor-default"
+          title="Best score"
+        >
+          <HiOutlineTrophy size={16} />
+          {bestScore}
+        </h1>
+      </div>
       <h1 className="text-center mt-5 text-lg">Incremento</h1>
       <div className="flex justify-center align-center gap-8 mt-10">
         <h4 className={numberStyles}>{numbers.firstNumber}</h4>
@@ -184,6 +202,10 @@ const Home = () => {
         score={score}
         openScoreModal={openScoreModal}
         handlePlayAgain={handlePlayAgain}
+      />
+      <InstructionModal
+        setShowInstructionModal={setShowInstructionModal}
+        showInstructionModal={showInstructionModal}
       />
     </div>
   );

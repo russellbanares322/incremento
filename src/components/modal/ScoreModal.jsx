@@ -26,13 +26,11 @@ const ScoreModal = ({
         >
           Play Again
         </button>
-        <div
-          className={`duration-500 bg-indigo-900 absolute top-1 left-1 text-white px-2 py-1 border-l-2 border-l-black border-b-2 border-b-black ${
-            !isNewHighScore && "scale-0"
-          }`}
-        >
-          New Best
-        </div>
+        {isNewHighScore && (
+          <div className="duration-500 bg-indigo-900 absolute top-1 left-1 text-white px-2 py-1 border-l-2 border-l-black border-b-2 border-b-black">
+            New Best
+          </div>
+        )}
       </div>
     </div>
   );
