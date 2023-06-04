@@ -3,7 +3,7 @@ import { NumbersInputData } from "../../data/NumbersInputData";
 import { HiOutlineTrophy } from "react-icons/hi2";
 import ScoreModal from "../modal/ScoreModal";
 import InstructionModal from "../modal/InstructionModal";
-const TIME = 10;
+const TIME = 5;
 
 const Home = () => {
   const numbersInputRef = useRef([]);

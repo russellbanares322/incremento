@@ -10,12 +10,12 @@ const InstructionModal = ({
   };
   return (
     <div
-      className={`duration-500 visible fixed inset-0 flex justify-center items-center bg-black bg-opacity-70 ${
+      className={`duration-500  visible fixed inset-0 flex justify-center items-center bg-black bg-opacity-70 ${
         !showInstructionModal && "hidden"
       }`}
     >
       <div
-        className={` relative bg-white translate-y-[-20px] h-auto w-[20rem] rounded-md p-3 m-3 shadow-light-blue shadow duration-500 ${
+        className={`border-l-2 border-l-black border-b-2 border-b-black relative bg-white translate-y-[-20px] h-auto w-[20rem] rounded-md p-3 m-3 shadow-light-blue shadow duration-500 ${
           !showInstructionModal && "scale-0"
         }`}
       >

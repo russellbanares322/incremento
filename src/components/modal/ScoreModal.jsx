@@ -13,7 +13,7 @@ const ScoreModal = ({
       }`}
     >
       <div
-        className={` relative bg-white translate-y-[-20px] h-auto w-[20rem] rounded-md p-3 m-3 shadow-light-blue shadow duration-500 ${
+        className={`border-l-2 border-l-black border-b-2 border-b-black relative bg-white translate-y-[-20px] h-auto w-[20rem] rounded-md p-3 m-3 shadow-light-blue shadow duration-500 ${
           !openScoreModal && "scale-0"
         }`}
       >
