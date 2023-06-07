@@ -3,13 +3,16 @@ import { NumbersInputData } from "../../data/NumbersInputData";
 import { HiOutlineTrophy } from "react-icons/hi2";
 import ScoreModal from "../modal/ScoreModal";
 import InstructionModal from "../modal/InstructionModal";
-const TIME = 5;
+import { TiPlus, TiMinus } from "react-icons/ti";
+import GameCountdownModal from "../modal/GameCountdownModal";
 
 const Home = () => {
   const numbersInputRef = useRef([]);
   const [score, setScore] = useState(0);
-  const [timer, setTimer] = useState(TIME);
+  const [timer, setTimer] = useState(5);
   const [openScoreModal, setOpenScoreModal] = useState(false);
+  const [gameCountdown, setGameCountdown] = useState(3);
+  const [showGameCountdown, setShowGameCountdown] = useState(false);
   const [bestScore, setBestScore] = useState(0);
   const [startGame, setStartGame] = useState(false);
   const [showInstructionModal, setShowInstructionModal] = useState(false);
@@ -27,13 +30,21 @@ const Home = () => {
   });
 
   const isNewHighScore = score > bestScore;
+
+  const handleIncrementTimer = () => {
+    setTimer((prevTimer) => prevTimer + 1);
+  };
+  const handleDecrementTimer = () => {
+    setTimer((prevTimer) => prevTimer - 1);
+  };
   const handleShowScoreModal = () => {
     setOpenScoreModal(true);
   };
   const handlePlayAgain = () => {
     setScore(0);
     setOpenScoreModal(false);
-    setTimer(TIME);
+    setTimer(5);
+    setGameCountdown(3);
     setNumbersInput({
       firstInputNumber: "",
       secondInputNumber: "",
@@ -65,7 +76,7 @@ const Home = () => {
 
   //Handler for starting the timer
   const handlestartGame = () => {
-    setStartGame(true);
+    setShowGameCountdown(true);
   };
 
   //Handler for inputs to jump to another input if the input itself already has a value
@@ -124,7 +135,32 @@ const Home = () => {
     }
   }, [numbersInput]);
 
-  //For the timer countdown
+  //For game countdown
+  useEffect(() => {
+    if (showGameCountdown) {
+      const gameCountdownInterval = setInterval(() => {
+        setGameCountdown((prevCount) => prevCount - 1);
+      }, 1000);
+
+      if (gameCountdown === 0) {
+        const gameCountdownTimeout = setTimeout(() => {
+          clearInterval(gameCountdownInterval);
+          setStartGame(true);
+          setShowGameCountdown(false);
+        }, 200);
+
+        return () => {
+          clearTimeout(gameCountdownTimeout);
+        };
+      }
+
+      return () => {
+        clearInterval(gameCountdownInterval);
+      };
+    }
+  }, [showGameCountdown, gameCountdown]);
+
+  //For timer countdown
   useEffect(() => {
     if (startGame) {
       const timeInterval = setInterval(() => {
@@ -144,7 +180,6 @@ const Home = () => {
   }, [startGame, timer]);
 
   //For showing instruction modal
-
   const handleShowInstructionModal = () => {
     setShowInstructionModal(true);
   };
@@ -189,10 +224,31 @@ const Home = () => {
         ))}
       </div>
       <div className="flex justify-center items-center mt-10 flex-col">
-        <h1 className="text-2xl">Timer: {timer}</h1>
+        <div className="flex gap-2 justify-center items-center">
+          <h1 className="text-2xl">
+            Timer:{timer}
+            <span className="text-[1.3rem]">s</span>
+          </h1>
+          {!startGame && (
+            <div className="bg-indigo-800 rounded-md py-1 px-1">
+              <TiPlus
+                onClick={handleIncrementTimer}
+                className="cursor-pointer"
+                size={17}
+                color="white"
+              />
+              <TiMinus
+                onClick={handleDecrementTimer}
+                className="cursor-pointer"
+                size={17}
+                color="white"
+              />
+            </div>
+          )}
+        </div>
         <button
           onClick={handlestartGame}
-          className="bg-indigo-800 text-white w-20 h-10 rounded-lg mt-5"
+          className="bg-indigo-800 text-white w-20 h-10 rounded-lg mt-10"
         >
           Play
         </button>
@@ -206,6 +262,10 @@ const Home = () => {
       <InstructionModal
         setShowInstructionModal={setShowInstructionModal}
         showInstructionModal={showInstructionModal}
+      />
+      <GameCountdownModal
+        showGameCountdown={showGameCountdown}
+        gameCountdown={gameCountdown}
       />
     </div>
   );
