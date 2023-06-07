@@ -5,6 +5,8 @@ import ScoreModal from "../modal/ScoreModal";
 import InstructionModal from "../modal/InstructionModal";
 import { TiPlus, TiMinus } from "react-icons/ti";
 import GameCountdownModal from "../modal/GameCountdownModal";
+import gameCountdownSoundEffect from "../../assets/gameCountdownSoundEffect.wav";
+import gameOverSoundEffect from "../../assets/gameOverSoundEffect.wav";
 
 const Home = () => {
   const numbersInputRef = useRef([]);
@@ -28,8 +30,14 @@ const Home = () => {
     thirdInputNumber: "",
     fourthInputNumber: "",
   });
+  const isAnswerCorrect =
+    +numbersInput.firstInputNumber === numbers.firstNumber + 1 &&
+    +numbersInput.secondInputNumber === numbers.secondNumber + 1 &&
+    +numbersInput.thirdInputNumber === numbers.thirdNumber + 1 &&
+    +numbersInput.fourthInputNumber === numbers.fourthNumber + 1;
 
   const isNewHighScore = score > bestScore;
+  const numberStyles = "bg-indigo-950 p-4 rounded-lg text-white";
 
   const handleIncrementTimer = () => {
     setTimer((prevTimer) => prevTimer + 1);
@@ -56,14 +64,15 @@ const Home = () => {
     }
   };
 
-  const isAnswerCorrect =
-    +numbersInput.firstInputNumber === numbers.firstNumber + 1 &&
-    +numbersInput.secondInputNumber === numbers.secondNumber + 1 &&
-    +numbersInput.thirdInputNumber === numbers.thirdNumber + 1 &&
-    +numbersInput.fourthInputNumber === numbers.fourthNumber + 1;
-
-  //Number styles
-  const numberStyles = "bg-indigo-950 p-4 rounded-lg text-white";
+  //Handler for generating random numbers
+  const handleGenerateNumbers = () => {
+    setNumbers({
+      firstNumber: Math.floor(Math.random() * 8) + 1,
+      secondNumber: Math.floor(Math.random() * 8) + 1,
+      thirdNumber: Math.floor(Math.random() * 8) + 1,
+      fourthNumber: Math.floor(Math.random() * 8) + 1,
+    });
+  };
 
   //For reading numbers input value
   const handleNumberChange = (e) => {
@@ -75,8 +84,20 @@ const Home = () => {
   };
 
   //Handler for starting the timer
-  const handlestartGame = () => {
+  const handleStartGame = () => {
+    const audio = new Audio(gameCountdownSoundEffect);
+    audio.playbackRate = 0.789;
+    audio.play();
     setShowGameCountdown(true);
+  };
+
+  const handlePlayGameOverSound = () => {
+    new Audio(gameOverSoundEffect).play();
+  };
+
+  //For showing instruction modal
+  const handleShowInstructionModal = () => {
+    setShowInstructionModal(true);
   };
 
   //Handler for inputs to jump to another input if the input itself already has a value
@@ -115,16 +136,6 @@ const Home = () => {
     }
   }, [numbersInput, NumbersInputData, startGame]);
 
-  //Handler for generating random numbers
-  const handleGenerateNumbers = () => {
-    setNumbers({
-      firstNumber: Math.floor(Math.random() * 8) + 1,
-      secondNumber: Math.floor(Math.random() * 8) + 1,
-      thirdNumber: Math.floor(Math.random() * 8) + 1,
-      fourthNumber: Math.floor(Math.random() * 8) + 1,
-    });
-  };
-
   //Checking if the typed answer matches the numbers
   useEffect(() => {
     if (isAnswerCorrect) {
@@ -141,7 +152,6 @@ const Home = () => {
       const gameCountdownInterval = setInterval(() => {
         setGameCountdown((prevCount) => prevCount - 1);
       }, 1000);
-
       if (gameCountdown === 0) {
         const gameCountdownTimeout = setTimeout(() => {
           clearInterval(gameCountdownInterval);
@@ -168,6 +178,7 @@ const Home = () => {
       }, 1000);
 
       if (timer === 0) {
+        handlePlayGameOverSound();
         clearInterval(timeInterval);
         handleShowScoreModal();
         setStartGame(false);
@@ -178,11 +189,6 @@ const Home = () => {
       };
     }
   }, [startGame, timer]);
-
-  //For showing instruction modal
-  const handleShowInstructionModal = () => {
-    setShowInstructionModal(true);
-  };
 
   return (
     <div className="h-full w-full bg-white md:w-[25rem] md:h-[30rem] md:rounded-lg relative">
@@ -247,7 +253,7 @@ const Home = () => {
           )}
         </div>
         <button
-          onClick={handlestartGame}
+          onClick={handleStartGame}
           className="bg-indigo-800 text-white w-20 h-10 rounded-lg mt-10"
         >
           Play
