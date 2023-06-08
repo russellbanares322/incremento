@@ -15,7 +15,9 @@ const Home = () => {
   const [openScoreModal, setOpenScoreModal] = useState(false);
   const [gameCountdown, setGameCountdown] = useState(3);
   const [showGameCountdown, setShowGameCountdown] = useState(false);
-  const [bestScore, setBestScore] = useState(0);
+  const [bestScore, setBestScore] = useState(
+    localStorage.getItem("bestScore") || 0
+  );
   const [startGame, setStartGame] = useState(false);
   const [showInstructionModal, setShowInstructionModal] = useState(false);
   const [numbers, setNumbers] = useState({
@@ -190,6 +192,11 @@ const Home = () => {
     }
   }, [startGame, timer]);
 
+  //Save score in local storage
+  useEffect(() => {
+    localStorage.setItem("bestScore", bestScore);
+  }, [bestScore]);
+
   return (
     <div className="h-full w-full bg-white md:w-[25rem] md:h-[30rem] md:rounded-lg relative">
       <div className="flex justify-between m-2 ml-5">
@@ -200,7 +207,7 @@ const Home = () => {
           How to play?
         </h1>
         <h1
-          className="flex justify-center items-center text-lg gap-1 mr-5 cursor-default"
+          className="flex justify-center items-center text-xl gap-1 mr-5 cursor-default"
           title="Best score"
         >
           <HiOutlineTrophy size={16} />
