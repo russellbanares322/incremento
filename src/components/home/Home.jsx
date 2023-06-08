@@ -243,19 +243,23 @@ const Home = () => {
             <span className="text-[1.3rem]">s</span>
           </h1>
           {!startGame && (
-            <div className="bg-indigo-800 rounded-md py-1 px-1">
-              <TiPlus
-                onClick={handleIncrementTimer}
-                className="cursor-pointer"
-                size={17}
-                color="white"
-              />
-              <TiMinus
-                onClick={handleDecrementTimer}
-                className="cursor-pointer"
-                size={17}
-                color="white"
-              />
+            <div className="flex flex-col gap-[0.1rem]">
+              <div className="bg-indigo-800 rounded-sm py-1 px-1">
+                <TiPlus
+                  onClick={handleIncrementTimer}
+                  className="cursor-pointer"
+                  size={11}
+                  color="white"
+                />
+              </div>
+              <div className="bg-indigo-800 rounded-sm py-1 px-1">
+                <TiMinus
+                  onClick={handleDecrementTimer}
+                  className="cursor-pointer"
+                  size={11}
+                  color="white"
+                />
+              </div>
             </div>
           )}
         </div>
